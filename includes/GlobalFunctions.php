@@ -1427,10 +1427,16 @@ function wfHostname() {
 		} elseif ( getenv( 'COMPUTERNAME' ) ) {
 			# Windows computer name
 			$host = getenv( 'COMPUTERNAME' );
-		} else {
+		} elseif ( isset ( $_SERVER['SERVER_NAME'] ) ) {
+		        # fix for undefined index SERVER_NAME
+			# per: https://phabricator.wikimedia.org/T172060
 			# This may be a virtual server.
-			$host = $_SERVER['SERVER_NAME'];
+		        $host = $_SERVER['SERVER_NAME'];
+		} else {
+		        global $wgServerName;
+		        $host = $wgServerName;
 		}
+
 	}
 	return $host;
 }
